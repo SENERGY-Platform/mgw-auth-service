@@ -25,6 +25,7 @@ import (
 
 func SetRoutes(e *gin.Engine, a lib.Api) {
 	e.GET(lib_model.SrvInfoPath, getSrvInfoH(a))
+	e.GET("auth-check", getAuthCheckH(a))
 	e.GET("health-check", getServiceHealthH(a))
 }
 

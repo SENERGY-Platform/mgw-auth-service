@@ -25,10 +25,10 @@ import (
 func getAuthCheckH(a lib.Api) gin.HandlerFunc {
 	return func(gc *gin.Context) {
 		v := gc.GetHeader("X-Test")
-		if v == "ok" {
-			gc.Status(http.StatusOK)
-		} else {
+		if v == "notOk" {
 			gc.Status(http.StatusUnauthorized)
+		} else {
+			gc.Status(http.StatusOK)
 		}
 	}
 }

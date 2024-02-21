@@ -29,6 +29,11 @@ import (
 	"time"
 )
 
+const (
+	usernameKey = "username"
+	metaKey     = "meta"
+)
+
 type errResponse struct {
 	Error struct {
 		Message string `json:"message"`
@@ -161,7 +166,7 @@ func getTraits(traits any) (string, map[string]any, error) {
 		return "", nil, errors.New("traits invalid type")
 	}
 	var username string
-	u, ok := traitMap["username"]
+	u, ok := traitMap[usernameKey]
 	if !ok {
 		return "", nil, errors.New("missing username")
 	}
@@ -169,7 +174,7 @@ func getTraits(traits any) (string, map[string]any, error) {
 		return "", nil, errors.New("username invalid type")
 	}
 	var meta map[string]any
-	m, ok := traitMap["meta"]
+	m, ok := traitMap[metaKey]
 	if ok {
 		if meta, ok = m.(map[string]any); !ok {
 			return "", nil, errors.New("meta invalid type")
@@ -223,7 +228,7 @@ func handleResp(resp *http.Response, err error) error {
 
 func newTraits(username string, meta map[string]any) map[string]any {
 	return map[string]any{
-		"username": username,
-		"meta":     meta,
+		usernameKey: username,
+		metaKey:     meta,
 	}
 }

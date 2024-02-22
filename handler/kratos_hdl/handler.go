@@ -91,7 +91,7 @@ func (h *Handler) Get(ctx context.Context, id string) (lib_model.Identity, error
 	return identity, nil
 }
 
-func (h *Handler) Add(ctx context.Context, iBase lib_model.IdentityBase, secret string) error {
+func (h *Handler) Add(ctx context.Context, iBase lib_model.IdentityBase, secret string) (string, error) {
 	ctxWt, cf := context.WithTimeout(ctx, h.httpTimeout)
 	defer cf()
 	config := kratos.IdentityWithCredentialsPasswordConfig{}
@@ -107,11 +107,14 @@ func (h *Handler) Add(ctx context.Context, iBase lib_model.IdentityBase, secret 
 		State:    &state,
 		Traits:   newTraits(iBase.Username, iBase.Meta),
 	}
-	_, resp, err := h.kClient.IdentityAPI.CreateIdentity(ctxWt).CreateIdentityBody(body).Execute()
+	kIdent, resp, err := h.kClient.IdentityAPI.CreateIdentity(ctxWt).CreateIdentityBody(body).Execute()
 	if err = handleResp(resp, err); err != nil {
-		return err
+		return "", err
 	}
-	return nil
+	if kIdent == nil {
+		return "", lib_model.NewInternalError(fmt.Errorf("request returned nil"))
+	}
+	return kIdent.Id, nil
 }
 
 func (h *Handler) Update(ctx context.Context, id string, meta map[string]any, secret string) error {

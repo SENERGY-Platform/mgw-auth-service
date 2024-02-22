@@ -24,7 +24,7 @@ import (
 type IdentityHandler interface {
 	List(ctx context.Context, filter lib_model.IdentityFilter) (map[string]lib_model.Identity, error)
 	Get(ctx context.Context, id string) (lib_model.Identity, error)
-	Add(ctx context.Context, iBase lib_model.IdentityBase, secret string) error
+	Add(ctx context.Context, iBase lib_model.IdentityBase, secret string) (string, error)
 	Update(ctx context.Context, id string, meta map[string]any, secret string) error
 	Delete(ctx context.Context, id string) error
 }

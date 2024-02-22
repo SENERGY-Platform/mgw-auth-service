@@ -16,8 +16,17 @@
 
 package lib
 
-import srv_info_lib "github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib"
+import (
+	"context"
+	srv_info_lib "github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib"
+	"github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+)
 
 type Api interface {
+	GetIdentities(ctx context.Context, filter model.IdentityFilter) (map[string]model.Identity, error)
+	GetIdentity(ctx context.Context, id string) (model.Identity, error)
+	AddIdentity(ctx context.Context, base model.IdentityBase, secret string) (string, error)
+	UpdateIdentity(ctx context.Context, id string, meta map[string]any, secret string) error
+	DeleteIdentity(ctx context.Context, id string) error
 	srv_info_lib.Api
 }

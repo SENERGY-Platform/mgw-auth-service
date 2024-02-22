@@ -24,9 +24,10 @@ import (
 )
 
 func SetRoutes(e *gin.Engine, a lib.Api) {
-	e.GET(lib_model.SrvInfoPath, getSrvInfoH(a))
-	e.GET("auth-check", getAuthCheckH(a))
-	e.GET("health-check", getServiceHealthH(a))
+	standardGrp := e.Group("")
+	setIdentitiesRoutes(a, standardGrp.Group(lib_model.IdentitiesPath))
+	standardGrp.GET(lib_model.SrvInfoPath, getSrvInfoH(a))
+	standardGrp.GET("health-check", getServiceHealthH(a))
 }
 
 func GetRoutes(e *gin.Engine) [][2]string {
@@ -45,4 +46,12 @@ func GetPathFilter() []string {
 	return []string{
 		"/health-check",
 	}
+}
+
+func setIdentitiesRoutes(a lib.Api, rg *gin.RouterGroup) {
+	rg.GET("", getIdentitiesH(a))
+	rg.POST("", postIdentityH(a))
+	rg.GET(":"+identIdParam, getIdentityH(a))
+	rg.PATCH(":"+identIdParam, patchIdentityH(a))
+	rg.DELETE(":"+identIdParam, deleteIdentityH(a))
 }

@@ -34,5 +34,15 @@ type Identity struct {
 }
 
 type IdentityFilter struct {
-	Type string
+	Type IdentityType
+}
+
+type NewIdentityRequest struct {
+	IdentityBase
+	Secret string `json:"secret"`
+}
+
+type UpdateIdentityRequest struct {
+	Meta   map[string]any `json:"meta"`
+	Secret string         `json:"secret"`
 }

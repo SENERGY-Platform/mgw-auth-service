@@ -23,5 +23,11 @@ const (
 )
 
 const (
-	SrvInfoPath = "info"
+	HumanType   IdentityType = "human"
+	MachineType IdentityType = "machine"
+)
+
+const (
+	IdentitiesPath = "identities"
+	SrvInfoPath    = "info"
 )

@@ -32,7 +32,7 @@ type DatabaseConfig struct {
 }
 
 type HttpClientConfig struct {
-	IdentitySrvBaseUrl string `json:"cew_base_url" env_var:"CEW_BASE_URL"`
+	IdentitySrvBaseUrl string `json:"identity_srv_base_url" env_var:"IDENTITY_SRV_BASE_URL"`
 	Timeout            int64  `json:"timeout" env_var:"HTTP_TIMEOUT"`
 }
 

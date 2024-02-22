@@ -94,6 +94,9 @@ func (h *Handler) Get(ctx context.Context, id string) (lib_model.Identity, error
 func (h *Handler) Add(ctx context.Context, iBase lib_model.IdentityBase, secret string) (string, error) {
 	ctxWt, cf := context.WithTimeout(ctx, h.httpTimeout)
 	defer cf()
+	if iBase.Type != lib_model.HumanType && iBase.Type != lib_model.MachineType {
+		return "", lib_model.NewInvalidInputError(fmt.Errorf("unknown type '%s'", iBase.Type))
+	}
 	config := kratos.IdentityWithCredentialsPasswordConfig{}
 	config.SetPassword(secret)
 	state := "active"

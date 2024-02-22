@@ -18,8 +18,10 @@ package model
 
 import "time"
 
+type IdentityType = string
+
 type IdentityBase struct {
-	Type     string         `json:"type"`
+	Type     IdentityType   `json:"type"`
 	Username string         `json:"username"`
 	Meta     map[string]any `json:"meta"`
 }

@@ -21,16 +21,6 @@ import (
 	"github.com/y-du/go-log-level/level"
 )
 
-type DatabaseConfig struct {
-	Host       string               `json:"host" env_var:"DB_HOST"`
-	Port       uint                 `json:"port" env_var:"DB_PORT"`
-	User       string               `json:"user" env_var:"DB_USER"`
-	Passwd     sb_util.SecretString `json:"passwd" env_var:"DB_PASSWD"`
-	Name       string               `json:"name" env_var:"DB_NAME"`
-	Timeout    int64                `json:"timeout" env_var:"DB_TIMEOUT"`
-	SchemaPath string               `json:"schema_path" env_var:"DB_SCHEMA_PATH"`
-}
-
 type HttpClientConfig struct {
 	IdentitySrvBaseUrl string `json:"identity_srv_base_url" env_var:"IDENTITY_SRV_BASE_URL"`
 	Timeout            int64  `json:"timeout" env_var:"HTTP_TIMEOUT"`
@@ -39,7 +29,6 @@ type HttpClientConfig struct {
 type Config struct {
 	ServerPort uint                 `json:"server_port" env_var:"SERVER_PORT"`
 	Logger     sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
-	Database   DatabaseConfig       `json:"database" env_var:"DATABASE_CONFIG"`
 	HttpClient HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
 }
 
@@ -51,13 +40,6 @@ func NewConfig(path string) (*Config, error) {
 			Utc:          true,
 			Microseconds: true,
 			Terminal:     true,
-		},
-		Database: DatabaseConfig{
-			Host:       "core-db",
-			Port:       3306,
-			Name:       "auth_service",
-			Timeout:    5000000000,
-			SchemaPath: "include/auth_storage_schema.sql",
 		},
 		HttpClient: HttpClientConfig{
 			IdentitySrvBaseUrl: "http://identity-service",

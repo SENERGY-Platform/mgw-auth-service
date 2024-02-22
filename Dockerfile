@@ -11,10 +11,7 @@ FROM alpine:3.19
 
 RUN mkdir -p /opt/auth-service
 WORKDIR /opt/auth-service
-RUN mkdir include
-RUN mkdir data
 COPY --from=builder /go/src/app/service service
-COPY --from=builder /go/src/app/include include
 
 HEALTHCHECK --interval=10s --timeout=5s --retries=3 CMD wget -nv -t1 --spider 'http://localhost/health-check' || exit 1
 

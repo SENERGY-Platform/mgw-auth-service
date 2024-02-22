@@ -26,10 +26,12 @@ import (
 	"github.com/SENERGY-Platform/go-service-base/watchdog"
 	"github.com/SENERGY-Platform/mgw-auth-service/api"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/http_hdl"
+	"github.com/SENERGY-Platform/mgw-auth-service/handler/kratos_hdl"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/SENERGY-Platform/mgw-auth-service/util"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
+	kratos "github.com/ory/kratos-client-go"
 	"net"
 	"net/http"
 	"os"
@@ -77,16 +79,16 @@ func main() {
 	watchdog.Logger = util.Logger
 	wtchdg := watchdog.New(syscall.SIGINT, syscall.SIGTERM)
 
-	//sql_db_hdl.Logger = util.Logger
-	//db, err := db.New(config.Database.Host, config.Database.Port, config.Database.User, config.Database.Passwd.String(), config.Database.Name)
-	//if err != nil {
-	//	util.Logger.Error(err)
-	//	ec = 1
-	//	return
-	//}
-	//defer db.Close()
+	kratosConf := kratos.NewConfiguration()
+	kratosConf.Servers = []kratos.ServerConfiguration{
+		{
+			URL: config.HttpClient.IdentitySrvBaseUrl,
+		},
+	}
+	kratosClient := kratos.NewAPIClient(kratosConf)
+	identityHdl := kratos_hdl.New(kratosClient, time.Duration(config.HttpClient.Timeout))
 
-	mApi := api.New(srvInfoHdl)
+	mApi := api.New(identityHdl, srvInfoHdl)
 
 	gin.SetMode(gin.ReleaseMode)
 	httpHandler := gin.New()

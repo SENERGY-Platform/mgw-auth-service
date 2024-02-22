@@ -16,15 +16,20 @@
 
 package api
 
-import srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
+import (
+	srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
+	"github.com/SENERGY-Platform/mgw-auth-service/handler"
+)
 
 type Api struct {
-	srvInfoHdl srv_info_hdl.SrvInfoHandler
+	identityHdl handler.IdentityHandler
+	srvInfoHdl  srv_info_hdl.SrvInfoHandler
 }
 
-func New(srvInfoHandler srv_info_hdl.SrvInfoHandler) *Api {
+func New(identityHandler handler.IdentityHandler, srvInfoHandler srv_info_hdl.SrvInfoHandler) *Api {
 	return &Api{
-		srvInfoHdl: srvInfoHandler,
+		identityHdl: identityHandler,
+		srvInfoHdl:  srvInfoHandler,
 	}
 }
 

@@ -31,10 +31,16 @@ type DatabaseConfig struct {
 	SchemaPath string               `json:"schema_path" env_var:"DB_SCHEMA_PATH"`
 }
 
+type HttpClientConfig struct {
+	IdentitySrvBaseUrl string `json:"cew_base_url" env_var:"CEW_BASE_URL"`
+	Timeout            int64  `json:"timeout" env_var:"HTTP_TIMEOUT"`
+}
+
 type Config struct {
 	ServerPort uint                 `json:"server_port" env_var:"SERVER_PORT"`
 	Logger     sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
 	Database   DatabaseConfig       `json:"database" env_var:"DATABASE_CONFIG"`
+	HttpClient HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
 }
 
 func NewConfig(path string) (*Config, error) {
@@ -52,6 +58,10 @@ func NewConfig(path string) (*Config, error) {
 			Name:       "auth_service",
 			Timeout:    5000000000,
 			SchemaPath: "include/auth_storage_schema.sql",
+		},
+		HttpClient: HttpClientConfig{
+			IdentitySrvBaseUrl: "http://identity-service",
+			Timeout:            10000000000,
 		},
 	}
 	err := sb_util.LoadConfig(path, &cfg, nil, nil, nil)

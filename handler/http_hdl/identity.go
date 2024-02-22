@@ -26,7 +26,7 @@ import (
 const identIdParam = "i"
 
 type getIdentitiesQuery struct {
-	Type string `json:"form"`
+	Type string `form:"type"`
 }
 
 func getIdentitiesH(a lib.Api) gin.HandlerFunc {

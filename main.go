@@ -133,21 +133,6 @@ func main() {
 
 	wtchdg.Start()
 
-	//dbCtx, dbCF := context.WithCancel(context.Background())
-	//wtchdg.RegisterStopFunc(func() error {
-	//	dbCF()
-	//	return nil
-	//})
-	//go func() {
-	//	defer dbCF()
-	//	if err = sql_db_hdl.InitDB(dbCtx, db, config.Database.SchemaPath, time.Second*5, time.Duration(config.Database.Timeout)); err != nil {
-	//		util.Logger.Error(err)
-	//		ec = 1
-	//		wtchdg.Trigger()
-	//		return
-	//	}
-	//}()
-
 	go func() {
 		defer srvCF()
 		util.Logger.Info("starting http server ...")

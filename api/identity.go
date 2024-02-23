@@ -19,6 +19,7 @@ package api
 import (
 	"context"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	"time"
 )
 
 func (a *Api) GetIdentities(ctx context.Context, filter lib_model.IdentityFilter) (map[string]lib_model.Identity, error) {
@@ -39,4 +40,32 @@ func (a *Api) UpdateIdentity(ctx context.Context, id string, meta map[string]any
 
 func (a *Api) DeleteIdentity(ctx context.Context, id string) error {
 	return a.identityHdl.Delete(ctx, id)
+}
+
+func (a *Api) OpenPairingSession(_ context.Context, duration time.Duration) error {
+	return a.credentialSessionHdl.Open(duration)
+}
+
+func (a *Api) ClosePairingSession(_ context.Context) error {
+	a.credentialSessionHdl.Close()
+	return nil
+}
+
+func (a *Api) PairMachine(ctx context.Context, meta map[string]any) (lib_model.CredentialsResponse, error) {
+	var cr lib_model.CredentialsResponse
+	var err error
+	cr.Login, cr.Secret, err = a.credentialSessionHdl.GetCredentials()
+	if err != nil {
+		return lib_model.CredentialsResponse{}, err
+	}
+	base := lib_model.IdentityBase{
+		Type:     lib_model.MachineType,
+		Username: cr.Login,
+		Meta:     meta,
+	}
+	cr.ID, err = a.identityHdl.Add(ctx, base, cr.Secret)
+	if err != nil {
+		return lib_model.CredentialsResponse{}, err
+	}
+	return cr, nil
 }

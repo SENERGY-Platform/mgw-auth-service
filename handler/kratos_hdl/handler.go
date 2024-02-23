@@ -151,7 +151,9 @@ func (h *Handler) Update(ctx context.Context, id string, meta map[string]any, se
 	}
 	resp, err = h.kClient.IdentityAPI.DeleteIdentitySessions(ch.Add(context.WithTimeout(ctx, h.httpTimeout)), id).Execute()
 	if err = handleResp(resp, err); err != nil {
-		return err
+		if resp.StatusCode != http.StatusNotFound {
+			return err
+		}
 	}
 	return nil
 }

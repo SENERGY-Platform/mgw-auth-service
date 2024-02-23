@@ -72,7 +72,7 @@ func (a *Api) PairMachine(ctx context.Context, meta map[string]any) (lib_model.C
 	return cr, nil
 }
 
-func (a *Api) CreateInitialIdentity(ctx context.Context, username string, delay time.Duration, retries int) {
+func (a *Api) CreateInitialIdentity(ctx context.Context, username, secret string, delay time.Duration, retries int) {
 	go func() {
 		identities, err := a.getIdentities(ctx, delay, retries)
 		if err != nil {
@@ -88,7 +88,7 @@ func (a *Api) CreateInitialIdentity(ctx context.Context, username string, delay 
 					"first_name": "Initial",
 					"last_name":  "User",
 				},
-			}, "")
+			}, secret)
 			if err != nil {
 				util.Logger.Errorf("creating initial identity failed: %s", err)
 				return

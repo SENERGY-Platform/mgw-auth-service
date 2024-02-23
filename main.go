@@ -143,7 +143,7 @@ func main() {
 		return nil
 	})
 
-	mApi.CreateInitialIdentity(diCtx, config.InitialIdentity, time.Second*5, 20)
+	mApi.CreateInitialIdentity(diCtx, config.InitIdentity.User, config.InitIdentity.Secret.String(), time.Second*5, 20)
 
 	go func() {
 		defer srvCF()

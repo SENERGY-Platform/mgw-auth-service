@@ -31,6 +31,7 @@ type Config struct {
 	Logger        sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
 	HttpClient    HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
 	CSDefDuration int64                `json:"cs_def_duration" env_var:"CS_DEF_DURATION"`
+	DefaultUser   string               `json:"default_user" env_var:"DEFAULT_USER"`
 }
 
 func NewConfig(path string) (*Config, error) {
@@ -47,6 +48,7 @@ func NewConfig(path string) (*Config, error) {
 			Timeout:            10000000000,
 		},
 		CSDefDuration: 300000000000,
+		DefaultUser:   "admin",
 	}
 	err := sb_util.LoadConfig(path, &cfg, nil, nil, nil)
 	return &cfg, err

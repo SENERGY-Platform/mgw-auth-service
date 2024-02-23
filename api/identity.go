@@ -78,7 +78,7 @@ func (a *Api) CreateInitialIdentity(ctx context.Context, username, secret string
 			ticker := time.NewTicker(delay)
 			defer ticker.Stop()
 			count := 0
-			util.Logger.Warningf("creating initial identity (%d/%d): %s", count, retries, err)
+			util.Logger.Warningf("creating initial identity failed (%d/%d): %s", count, retries, err)
 			for {
 				select {
 				case <-ticker.C:

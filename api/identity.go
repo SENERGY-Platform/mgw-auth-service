@@ -18,7 +18,9 @@ package api
 
 import (
 	"context"
+	"fmt"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	"github.com/SENERGY-Platform/mgw-auth-service/util"
 	"time"
 )
 
@@ -68,4 +70,57 @@ func (a *Api) PairMachine(ctx context.Context, meta map[string]any) (lib_model.C
 		return lib_model.CredentialsResponse{}, err
 	}
 	return cr, nil
+}
+
+func (a *Api) CreateInitialIdentity(ctx context.Context, username string, delay time.Duration, retries int) {
+	go func() {
+		identities, err := a.getIdentities(ctx, delay, retries)
+		if err != nil {
+			util.Logger.Error(err)
+			return
+		}
+		if len(identities) == 0 {
+			util.Logger.Infof("creating initial identity")
+			_, err = a.identityHdl.Add(ctx, lib_model.IdentityBase{
+				Type:     lib_model.HumanType,
+				Username: username,
+				Meta: map[string]any{
+					"first_name": "Initial",
+					"last_name":  "User",
+				},
+			}, "")
+			if err != nil {
+				util.Logger.Errorf("creating initial identity failed: %s", err)
+				return
+			}
+		}
+	}()
+}
+
+func (a *Api) getIdentities(ctx context.Context, delay time.Duration, retries int) (map[string]lib_model.Identity, error) {
+	identities, err := a.identityHdl.List(ctx, lib_model.IdentityFilter{Type: lib_model.HumanType})
+	if err != nil {
+		ticker := time.NewTicker(delay)
+		defer ticker.Stop()
+		count := 0
+		util.Logger.Warningf("connecting to identity server (%d/%d): %s", count, retries, err)
+		for {
+			select {
+			case <-ticker.C:
+				count += 1
+				identities, err = a.identityHdl.List(ctx, lib_model.IdentityFilter{Type: lib_model.HumanType})
+				if err != nil {
+					util.Logger.Warningf("connecting to identity server failed (%d/%d): %s", count, retries, err)
+				} else {
+					return identities, nil
+				}
+				if count >= retries {
+					return nil, fmt.Errorf("connecting to identity server failed: %s", err)
+				}
+			case <-ctx.Done():
+				return nil, ctx.Err()
+			}
+		}
+	}
+	return identities, nil
 }

@@ -137,6 +137,14 @@ func main() {
 
 	wtchdg.Start()
 
+	diCtx, diCF := context.WithCancel(context.Background())
+	wtchdg.RegisterStopFunc(func() error {
+		diCF()
+		return nil
+	})
+
+	mApi.CreateInitialIdentity(diCtx, config.InitialIdentity, time.Second*5, 20)
+
 	go func() {
 		defer srvCF()
 		util.Logger.Info("starting http server ...")

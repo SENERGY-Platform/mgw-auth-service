@@ -46,3 +46,9 @@ type UpdateIdentityRequest struct {
 	Meta   map[string]any `json:"meta"`
 	Secret string         `json:"secret"`
 }
+
+type CredentialsResponse struct {
+	ID     string `json:"id"`
+	Login  string `json:"login"`
+	Secret string `json:"secret"`
+}

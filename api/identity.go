@@ -110,10 +110,6 @@ func (a *Api) createInitIdentity(ctx context.Context, username, secret string) e
 		_, err = a.identityHdl.Add(ctx, lib_model.IdentityBase{
 			Type:     lib_model.HumanType,
 			Username: username,
-			Meta: map[string]any{
-				"first_name": "Initial",
-				"last_name":  "User",
-			},
 		}, secret)
 		if err != nil {
 			return err

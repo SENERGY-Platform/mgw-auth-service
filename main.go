@@ -25,6 +25,7 @@ import (
 	sb_util "github.com/SENERGY-Platform/go-service-base/util"
 	"github.com/SENERGY-Platform/go-service-base/watchdog"
 	"github.com/SENERGY-Platform/mgw-auth-service/api"
+	"github.com/SENERGY-Platform/mgw-auth-service/handler/cs_hdl"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/http_hdl"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/kratos_hdl"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
@@ -88,7 +89,10 @@ func main() {
 	kratosClient := kratos.NewAPIClient(kratosConf)
 	identityHdl := kratos_hdl.New(kratosClient, time.Duration(config.HttpClient.Timeout))
 
-	mApi := api.New(identityHdl, srvInfoHdl)
+	csHdl := cs_hdl.New(time.Duration(config.CSDefDuration))
+	defer csHdl.Close()
+
+	mApi := api.New(identityHdl, csHdl, srvInfoHdl)
 
 	gin.SetMode(gin.ReleaseMode)
 	httpHandler := gin.New()

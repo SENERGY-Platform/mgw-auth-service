@@ -58,7 +58,7 @@ func setIdentitiesRoutes(a lib.Api, rg *gin.RouterGroup) {
 }
 
 func setPairingRoutes(a lib.Api, rg *gin.RouterGroup) {
-	rg.POST("", postPairingH(a))
+	rg.POST(lib_model.PairingReqPath, postPairingH(a))
 	rg.PATCH(lib_model.OpenPath, patchPairingOpenH(a))
 	rg.PATCH(lib_model.ClosePath, patchPairingCloseH(a))
 }

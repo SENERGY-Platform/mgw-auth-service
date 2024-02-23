@@ -30,6 +30,7 @@ const (
 const (
 	IdentitiesPath = "identities"
 	PairingPath    = "pairing"
+	PairingReqPath = "request"
 	OpenPath       = "open"
 	ClosePath      = "close"
 	SrvInfoPath    = "info"

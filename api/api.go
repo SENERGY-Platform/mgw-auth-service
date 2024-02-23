@@ -22,14 +22,16 @@ import (
 )
 
 type Api struct {
-	identityHdl handler.IdentityHandler
-	srvInfoHdl  srv_info_hdl.SrvInfoHandler
+	identityHdl          handler.IdentityHandler
+	credentialSessionHdl handler.CredentialSessionHandler
+	srvInfoHdl           srv_info_hdl.SrvInfoHandler
 }
 
-func New(identityHandler handler.IdentityHandler, srvInfoHandler srv_info_hdl.SrvInfoHandler) *Api {
+func New(identityHandler handler.IdentityHandler, credentialSessionHdl handler.CredentialSessionHandler, srvInfoHandler srv_info_hdl.SrvInfoHandler) *Api {
 	return &Api{
-		identityHdl: identityHandler,
-		srvInfoHdl:  srvInfoHandler,
+		identityHdl:          identityHandler,
+		credentialSessionHdl: credentialSessionHdl,
+		srvInfoHdl:           srvInfoHandler,
 	}
 }
 

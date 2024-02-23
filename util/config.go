@@ -26,12 +26,17 @@ type HttpClientConfig struct {
 	Timeout            int64  `json:"timeout" env_var:"HTTP_TIMEOUT"`
 }
 
+type InitIdentityConfig struct {
+	User   string               `json:"user" env_var:"II_USER"`
+	Secret sb_util.SecretString `json:"secret" env_var:"II_SECRET"`
+}
+
 type Config struct {
-	ServerPort      uint                 `json:"server_port" env_var:"SERVER_PORT"`
-	Logger          sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
-	HttpClient      HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
-	CSDefDuration   int64                `json:"cs_def_duration" env_var:"CS_DEF_DURATION"`
-	InitialIdentity string               `json:"initial_identity" env_var:"INITIAL_IDENTITY"`
+	ServerPort    uint                 `json:"server_port" env_var:"SERVER_PORT"`
+	Logger        sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
+	HttpClient    HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
+	CSDefDuration int64                `json:"cs_def_duration" env_var:"CS_DEF_DURATION"`
+	InitIdentity  InitIdentityConfig   `json:"init_identity" env_var:"INIT_IDENTITY"`
 }
 
 func NewConfig(path string) (*Config, error) {
@@ -47,8 +52,7 @@ func NewConfig(path string) (*Config, error) {
 			IdentitySrvBaseUrl: "http://identity-service",
 			Timeout:            10000000000,
 		},
-		CSDefDuration:   300000000000,
-		InitialIdentity: "user",
+		CSDefDuration: 300000000000,
 	}
 	err := sb_util.LoadConfig(path, &cfg, nil, nil, nil)
 	return &cfg, err

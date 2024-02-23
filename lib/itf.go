@@ -20,6 +20,7 @@ import (
 	"context"
 	srv_info_lib "github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib"
 	"github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	"time"
 )
 
 type Api interface {
@@ -28,5 +29,8 @@ type Api interface {
 	AddIdentity(ctx context.Context, base model.IdentityBase, secret string) (string, error)
 	UpdateIdentity(ctx context.Context, id string, meta map[string]any, secret string) error
 	DeleteIdentity(ctx context.Context, id string) error
+	OpenPairingSession(ctx context.Context, duration time.Duration) error
+	ClosePairingSession(ctx context.Context) error
+	PairMachine(ctx context.Context, meta map[string]any) (cr model.CredentialsResponse, err error)
 	srv_info_lib.Api
 }

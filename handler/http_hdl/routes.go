@@ -26,6 +26,7 @@ import (
 func SetRoutes(e *gin.Engine, a lib.Api) {
 	standardGrp := e.Group("")
 	setIdentitiesRoutes(a, standardGrp.Group(lib_model.IdentitiesPath))
+	setPairingRoutes(a, standardGrp.Group(lib_model.PairingPath))
 	standardGrp.GET(lib_model.SrvInfoPath, getSrvInfoH(a))
 	standardGrp.GET("health-check", getServiceHealthH(a))
 }
@@ -54,4 +55,10 @@ func setIdentitiesRoutes(a lib.Api, rg *gin.RouterGroup) {
 	rg.GET(":"+identIdParam, getIdentityH(a))
 	rg.PATCH(":"+identIdParam, patchIdentityH(a))
 	rg.DELETE(":"+identIdParam, deleteIdentityH(a))
+}
+
+func setPairingRoutes(a lib.Api, rg *gin.RouterGroup) {
+	rg.POST("", postPairingH(a))
+	rg.PATCH(lib_model.OpenPath, patchPairingOpenH(a))
+	rg.PATCH(lib_model.ClosePath, patchPairingCloseH(a))
 }

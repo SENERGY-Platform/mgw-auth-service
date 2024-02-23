@@ -29,5 +29,8 @@ const (
 
 const (
 	IdentitiesPath = "identities"
+	PairingPath    = "pairing"
+	OpenPath       = "open"
+	ClosePath      = "close"
 	SrvInfoPath    = "info"
 )

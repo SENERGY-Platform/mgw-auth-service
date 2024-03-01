@@ -21,8 +21,7 @@ import (
 )
 
 type flags struct {
-	ConfPath  string
-	ManagerID string
+	ConfPath string
 }
 
 var Flags flags

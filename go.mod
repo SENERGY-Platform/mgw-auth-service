@@ -4,17 +4,19 @@ go 1.22.0
 
 require (
 	github.com/SENERGY-Platform/gin-middleware v0.4.3
+	github.com/SENERGY-Platform/go-service-base/config-hdl v0.1.0
 	github.com/SENERGY-Platform/go-service-base/context-hdl v0.0.3
+	github.com/SENERGY-Platform/go-service-base/logger v0.2.0
 	github.com/SENERGY-Platform/go-service-base/srv-info-hdl v0.0.3
 	github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib v0.0.2
-	github.com/SENERGY-Platform/go-service-base/util v0.14.1
+	github.com/SENERGY-Platform/go-service-base/util v1.1.0
 	github.com/SENERGY-Platform/go-service-base/watchdog v0.4.2
 	github.com/SENERGY-Platform/mgw-auth-service/lib v0.0.0-00010101000000-000000000000
 	github.com/gin-contrib/requestid v1.0.2
 	github.com/gin-gonic/gin v1.10.0
 	github.com/google/uuid v1.6.0
 	github.com/ory/kratos-client-go v1.2.1
-	github.com/y-du/go-log-level v0.2.4
+	github.com/y-du/go-log-level v1.0.0
 )
 
 require (

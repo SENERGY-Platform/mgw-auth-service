@@ -17,7 +17,8 @@
 package util
 
 import (
-	sb_util "github.com/SENERGY-Platform/go-service-base/util"
+	"github.com/SENERGY-Platform/go-service-base/config-hdl"
+	cfg_types "github.com/SENERGY-Platform/go-service-base/config-hdl/types"
 	"github.com/y-du/go-log-level/level"
 )
 
@@ -27,22 +28,32 @@ type HttpClientConfig struct {
 }
 
 type InitIdentityConfig struct {
-	User   string               `json:"user" env_var:"II_USER"`
-	Secret sb_util.SecretString `json:"secret" env_var:"II_SECRET"`
+	User   string           `json:"user" env_var:"II_USER"`
+	Secret cfg_types.Secret `json:"secret" env_var:"II_SECRET"`
+}
+
+type LoggerConfig struct {
+	Level        level.Level `json:"level" env_var:"LOGGER_LEVEL"`
+	Utc          bool        `json:"utc" env_var:"LOGGER_UTC"`
+	Path         string      `json:"path" env_var:"LOGGER_PATH"`
+	FileName     string      `json:"file_name" env_var:"LOGGER_FILE_NAME"`
+	Terminal     bool        `json:"terminal" env_var:"LOGGER_TERMINAL"`
+	Microseconds bool        `json:"microseconds" env_var:"LOGGER_MICROSECONDS"`
+	Prefix       string      `json:"prefix" env_var:"LOGGER_PREFIX"`
 }
 
 type Config struct {
-	ServerPort    uint                 `json:"server_port" env_var:"SERVER_PORT"`
-	Logger        sb_util.LoggerConfig `json:"logger" env_var:"LOGGER_CONFIG"`
-	HttpClient    HttpClientConfig     `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
-	CSDefDuration int64                `json:"cs_def_duration" env_var:"CS_DEF_DURATION"`
-	InitIdentity  InitIdentityConfig   `json:"init_identity" env_var:"INIT_IDENTITY"`
+	ServerPort    uint               `json:"server_port" env_var:"SERVER_PORT"`
+	Logger        LoggerConfig       `json:"logger" env_var:"LOGGER_CONFIG"`
+	HttpClient    HttpClientConfig   `json:"http_client" env_var:"HTTP_CLIENT_CONFIG"`
+	CSDefDuration int64              `json:"cs_def_duration" env_var:"CS_DEF_DURATION"`
+	InitIdentity  InitIdentityConfig `json:"init_identity" env_var:"INIT_IDENTITY"`
 }
 
 func NewConfig(path string) (*Config, error) {
 	cfg := Config{
 		ServerPort: 80,
-		Logger: sb_util.LoggerConfig{
+		Logger: LoggerConfig{
 			Level:        level.Warning,
 			Utc:          true,
 			Microseconds: true,
@@ -54,6 +65,6 @@ func NewConfig(path string) (*Config, error) {
 		},
 		CSDefDuration: 300000000000,
 	}
-	err := sb_util.LoadConfig(path, &cfg, nil, nil, nil)
+	err := config_hdl.Load(&cfg, nil, nil, nil, path)
 	return &cfg, err
 }

@@ -1,6 +1,6 @@
 module github.com/SENERGY-Platform/mgw-auth-service
 
-go 1.22.0
+go 1.23
 
 require (
 	github.com/SENERGY-Platform/gin-middleware v0.4.3

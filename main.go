@@ -25,11 +25,11 @@ import (
 	srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
 	sb_util "github.com/SENERGY-Platform/go-service-base/util"
 	"github.com/SENERGY-Platform/go-service-base/watchdog"
-	"github.com/SENERGY-Platform/mgw-auth-service/api"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/cs_hdl"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/http_hdl"
 	"github.com/SENERGY-Platform/mgw-auth-service/handler/kratos_hdl"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	"github.com/SENERGY-Platform/mgw-auth-service/service"
 	"github.com/SENERGY-Platform/mgw-auth-service/util"
 	"github.com/gin-contrib/requestid"
 	"github.com/gin-gonic/gin"
@@ -93,7 +93,7 @@ func main() {
 	csHdl := cs_hdl.New(time.Duration(config.CSDefDuration))
 	defer csHdl.Close()
 
-	mApi := api.New(identityHdl, csHdl, srvInfoHdl)
+	srv := service.New(identityHdl, csHdl, srvInfoHdl)
 
 	gin.SetMode(gin.ReleaseMode)
 	httpHandler := gin.New()
@@ -106,7 +106,7 @@ func main() {
 	}), gin_mw.ErrorHandler(util.GetStatusCode, ", "), gin.Recovery())
 	httpHandler.UseRawPath = true
 
-	http_hdl.SetRoutes(httpHandler, mApi)
+	http_hdl.SetRoutes(httpHandler, srv)
 	util.Logger.Debugf("routes: %s", sb_util.ToJsonStr(http_hdl.GetRoutes(httpHandler)))
 
 	listener, err := net.Listen("tcp", ":"+strconv.FormatInt(int64(config.ServerPort), 10))
@@ -144,7 +144,7 @@ func main() {
 		return nil
 	})
 
-	mApi.CreateInitialIdentity(diCtx, config.InitIdentity.User, config.InitIdentity.Secret.Value(), time.Second*5, 10)
+	srv.CreateInitialIdentity(diCtx, config.InitIdentity.User, config.InitIdentity.Secret.Value(), time.Second*5, 10)
 
 	go func() {
 		defer srvCF()

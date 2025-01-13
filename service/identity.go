@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package api
+package service
 
 import (
 	"context"
@@ -23,36 +23,36 @@ import (
 	"time"
 )
 
-func (a *Api) GetIdentities(ctx context.Context, filter lib_model.IdentityFilter) (map[string]lib_model.Identity, error) {
+func (a *Service) GetIdentities(ctx context.Context, filter lib_model.IdentityFilter) (map[string]lib_model.Identity, error) {
 	return a.identityHdl.List(ctx, filter)
 }
 
-func (a *Api) GetIdentity(ctx context.Context, id string) (lib_model.Identity, error) {
+func (a *Service) GetIdentity(ctx context.Context, id string) (lib_model.Identity, error) {
 	return a.identityHdl.Get(ctx, id)
 }
 
-func (a *Api) AddIdentity(ctx context.Context, base lib_model.IdentityBase, secret string) (string, error) {
+func (a *Service) AddIdentity(ctx context.Context, base lib_model.IdentityBase, secret string) (string, error) {
 	return a.identityHdl.Add(ctx, base, secret)
 }
 
-func (a *Api) UpdateIdentity(ctx context.Context, id string, meta map[string]any, secret string) error {
+func (a *Service) UpdateIdentity(ctx context.Context, id string, meta map[string]any, secret string) error {
 	return a.identityHdl.Update(ctx, id, meta, secret)
 }
 
-func (a *Api) DeleteIdentity(ctx context.Context, id string) error {
+func (a *Service) DeleteIdentity(ctx context.Context, id string) error {
 	return a.identityHdl.Delete(ctx, id)
 }
 
-func (a *Api) OpenPairingSession(_ context.Context, duration time.Duration) error {
+func (a *Service) OpenPairingSession(_ context.Context, duration time.Duration) error {
 	return a.credentialSessionHdl.Open(duration)
 }
 
-func (a *Api) ClosePairingSession(_ context.Context) error {
+func (a *Service) ClosePairingSession(_ context.Context) error {
 	a.credentialSessionHdl.Close()
 	return nil
 }
 
-func (a *Api) PairMachine(ctx context.Context, meta map[string]any) (lib_model.CredentialsResponse, error) {
+func (a *Service) PairMachine(ctx context.Context, meta map[string]any) (lib_model.CredentialsResponse, error) {
 	var cr lib_model.CredentialsResponse
 	var err error
 	cr.Login, cr.Secret, err = a.credentialSessionHdl.GetCredentials()
@@ -71,7 +71,7 @@ func (a *Api) PairMachine(ctx context.Context, meta map[string]any) (lib_model.C
 	return cr, nil
 }
 
-func (a *Api) CreateInitialIdentity(ctx context.Context, username, secret string, delay time.Duration, retries int) {
+func (a *Service) CreateInitialIdentity(ctx context.Context, username, secret string, delay time.Duration, retries int) {
 	go func() {
 		err := a.createInitIdentity(ctx, username, secret)
 		if err != nil {
@@ -101,7 +101,7 @@ func (a *Api) CreateInitialIdentity(ctx context.Context, username, secret string
 	}()
 }
 
-func (a *Api) createInitIdentity(ctx context.Context, username, secret string) error {
+func (a *Service) createInitIdentity(ctx context.Context, username, secret string) error {
 	identities, err := a.identityHdl.List(ctx, lib_model.IdentityFilter{Type: lib_model.HumanType})
 	if err != nil {
 		return err

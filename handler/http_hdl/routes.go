@@ -17,48 +17,41 @@
 package http_hdl
 
 import (
+	gin_mw "github.com/SENERGY-Platform/gin-middleware"
 	"github.com/SENERGY-Platform/mgw-auth-service/lib"
-	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	"github.com/SENERGY-Platform/mgw-auth-service/util"
 	"github.com/gin-gonic/gin"
-	"sort"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-func SetRoutes(e *gin.Engine, a lib.Api) {
-	standardGrp := e.Group("")
-	setIdentitiesRoutes(a, standardGrp.Group(lib_model.IdentitiesPath))
-	setPairingRoutes(a, standardGrp.Group(lib_model.PairingPath))
-	standardGrp.GET(lib_model.SrvInfoPath, getSrvInfoH(a))
-	standardGrp.GET("health-check", getServiceHealthH(a))
+const healthCheckPath = "/health-check"
+
+var routes = gin_mw.Routes[lib.Api]{
+	GetServiceHealthH,
+	GetIdentitiesH,
+	PostIdentityH,
+	GetIdentityH,
+	PatchIdentityH,
+	DeleteIdentityH,
+	PostPairingH,
+	PatchPairingOpenH,
+	PatchPairingCloseH,
+	GetSrvInfoH,
 }
 
-func GetRoutes(e *gin.Engine) [][2]string {
-	routes := e.Routes()
-	sort.Slice(routes, func(i, j int) bool {
-		return routes[i].Path < routes[j].Path
-	})
-	var rInfo [][2]string
-	for _, info := range routes {
-		rInfo = append(rInfo, [2]string{info.Method, info.Path})
+// SetRoutes
+// @title Auth Service API
+// @version 0.2.13
+// @description Provides access to auth functions.
+// @license.name Apache-2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @BasePath /
+func SetRoutes(e *gin.Engine, a lib.Api) error {
+	err := routes.Set(a, e, util.Logger)
+	if err != nil {
+		return err
 	}
-	return rInfo
-}
-
-func GetPathFilter() []string {
-	return []string{
-		"/health-check",
-	}
-}
-
-func setIdentitiesRoutes(a lib.Api, rg *gin.RouterGroup) {
-	rg.GET("", getIdentitiesH(a))
-	rg.POST("", postIdentityH(a))
-	rg.GET(":"+identIdParam, getIdentityH(a))
-	rg.PATCH(":"+identIdParam, patchIdentityH(a))
-	rg.DELETE(":"+identIdParam, deleteIdentityH(a))
-}
-
-func setPairingRoutes(a lib.Api, rg *gin.RouterGroup) {
-	rg.POST(lib_model.PairingReqPath, postPairingH(a))
-	rg.PATCH(lib_model.OpenPath, patchPairingOpenH(a))
-	rg.PATCH(lib_model.ClosePath, patchPairingCloseH(a))
+	e.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.NewHandler()))
+	return nil
 }

@@ -21,16 +21,15 @@ import (
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"path"
 )
-
-const identIdParam = "i"
 
 type getIdentitiesQuery struct {
 	Type string `form:"type"`
 }
 
-func getIdentitiesH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func GetIdentitiesH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodGet, lib_model.IdentitiesPath, func(gc *gin.Context) {
 		query := getIdentitiesQuery{}
 		if err := gc.ShouldBindQuery(&query); err != nil {
 			_ = gc.Error(lib_model.NewInvalidInputError(err))
@@ -48,8 +47,8 @@ func getIdentitiesH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func postIdentityH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func PostIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodPost, lib_model.IdentitiesPath, func(gc *gin.Context) {
 		var req lib_model.NewIdentityRequest
 		err := gc.ShouldBindJSON(&req)
 		if err != nil {
@@ -65,9 +64,9 @@ func postIdentityH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func getIdentityH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
-		identity, err := a.GetIdentity(gc.Request.Context(), gc.Param(identIdParam))
+func GetIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodGet, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
+		identity, err := a.GetIdentity(gc.Request.Context(), gc.Param("id"))
 		if err != nil {
 			_ = gc.Error(err)
 			return
@@ -76,15 +75,15 @@ func getIdentityH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func patchIdentityH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func PatchIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodPatch, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
 		var req lib_model.UpdateIdentityRequest
 		err := gc.ShouldBindJSON(&req)
 		if err != nil {
 			_ = gc.Error(lib_model.NewInvalidInputError(err))
 			return
 		}
-		err = a.UpdateIdentity(gc.Request.Context(), gc.Param(identIdParam), req.Meta, req.Secret)
+		err = a.UpdateIdentity(gc.Request.Context(), gc.Param("id"), req.Meta, req.Secret)
 		if err != nil {
 			_ = gc.Error(err)
 			return
@@ -93,9 +92,9 @@ func patchIdentityH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func deleteIdentityH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
-		if err := a.DeleteIdentity(gc.Request.Context(), gc.Param(identIdParam)); err != nil {
+func DeleteIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodDelete, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
+		if err := a.DeleteIdentity(gc.Request.Context(), gc.Param("id")); err != nil {
 			_ = gc.Error(err)
 			return
 		}

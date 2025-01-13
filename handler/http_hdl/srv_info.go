@@ -18,12 +18,13 @@ package http_hdl
 
 import (
 	"github.com/SENERGY-Platform/mgw-auth-service/lib"
+	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
-func getSrvInfoH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func GetSrvInfoH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodGet, lib_model.SrvInfoPath, func(gc *gin.Context) {
 		gc.JSON(http.StatusOK, a.GetSrvInfo(gc.Request.Context()))
 	}
 }

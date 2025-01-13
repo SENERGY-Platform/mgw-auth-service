@@ -22,9 +22,8 @@ import (
 	"net/http"
 )
 
-func getServiceHealthH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
-
+func GetServiceHealthH(_ lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodGet, healthCheckPath, func(gc *gin.Context) {
 		gc.Status(http.StatusOK)
 	}
 }

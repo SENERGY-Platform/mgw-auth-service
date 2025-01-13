@@ -20,7 +20,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/SENERGY-Platform/gin-middleware"
 	sb_logger "github.com/SENERGY-Platform/go-service-base/logger"
 	srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
 	sb_util "github.com/SENERGY-Platform/go-service-base/util"
@@ -31,8 +30,6 @@ import (
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/SENERGY-Platform/mgw-auth-service/service"
 	"github.com/SENERGY-Platform/mgw-auth-service/util"
-	"github.com/gin-contrib/requestid"
-	"github.com/gin-gonic/gin"
 	kratos "github.com/ory/kratos-client-go"
 	"net"
 	"net/http"
@@ -95,19 +92,15 @@ func main() {
 
 	srv := service.New(identityHdl, csHdl, srvInfoHdl)
 
-	gin.SetMode(gin.ReleaseMode)
-	httpHandler := gin.New()
-	staticHeader := map[string]string{
+	httpHandler, err := http_hdl.New(srv, map[string]string{
 		lib_model.HeaderApiVer:  srvInfoHdl.GetVersion(),
 		lib_model.HeaderSrvName: srvInfoHdl.GetName(),
+	})
+	if err != nil {
+		util.Logger.Error(err)
+		ec = 1
+		return
 	}
-	httpHandler.Use(gin_mw.StaticHeaderHandler(staticHeader), requestid.New(requestid.WithCustomHeaderStrKey(lib_model.HeaderRequestID)), gin_mw.LoggerHandler(util.Logger, http_hdl.GetPathFilter(), func(gc *gin.Context) string {
-		return requestid.Get(gc)
-	}), gin_mw.ErrorHandler(util.GetStatusCode, ", "), gin.Recovery())
-	httpHandler.UseRawPath = true
-
-	http_hdl.SetRoutes(httpHandler, srv)
-	util.Logger.Debugf("routes: %s", sb_util.ToJsonStr(http_hdl.GetRoutes(httpHandler)))
 
 	listener, err := net.Listen("tcp", ":"+strconv.FormatInt(int64(config.ServerPort), 10))
 	if err != nil {

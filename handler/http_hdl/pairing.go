@@ -21,6 +21,7 @@ import (
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"path"
 	"time"
 )
 
@@ -28,8 +29,8 @@ type pairingOpenQuery struct {
 	Duration int64 `form:"duration"`
 }
 
-func postPairingH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func PostPairingH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodPost, path.Join(lib_model.PairingPath, lib_model.PairingReqPath), func(gc *gin.Context) {
 		var req map[string]any
 		err := gc.ShouldBindJSON(&req)
 		if err != nil {
@@ -45,8 +46,8 @@ func postPairingH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func patchPairingOpenH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func PatchPairingOpenH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodPatch, path.Join(lib_model.PairingPath, lib_model.OpenPath), func(gc *gin.Context) {
 		var query pairingOpenQuery
 		if err := gc.ShouldBindQuery(&query); err != nil {
 			_ = gc.Error(lib_model.NewInvalidInputError(err))
@@ -61,8 +62,8 @@ func patchPairingOpenH(a lib.Api) gin.HandlerFunc {
 	}
 }
 
-func patchPairingCloseH(a lib.Api) gin.HandlerFunc {
-	return func(gc *gin.Context) {
+func PatchPairingCloseH(a lib.Api) (string, string, gin.HandlerFunc) {
+	return http.MethodPatch, path.Join(lib_model.PairingPath, lib_model.ClosePath), func(gc *gin.Context) {
 		err := a.ClosePairingSession(gc.Request.Context())
 		if err != nil {
 			_ = gc.Error(err)

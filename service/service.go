@@ -18,16 +18,15 @@ package service
 
 import (
 	srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
-	"github.com/SENERGY-Platform/mgw-auth-service/handler"
 )
 
 type Service struct {
-	identityHdl          handler.IdentityHandler
-	credentialSessionHdl handler.CredentialSessionHandler
+	identityHdl          IdentityHandler
+	credentialSessionHdl CredentialSessionHandler
 	srvInfoHdl           srv_info_hdl.SrvInfoHandler
 }
 
-func New(identityHandler handler.IdentityHandler, credentialSessionHdl handler.CredentialSessionHandler, srvInfoHandler srv_info_hdl.SrvInfoHandler) *Service {
+func New(identityHandler IdentityHandler, credentialSessionHdl CredentialSessionHandler, srvInfoHandler srv_info_hdl.SrvInfoHandler) *Service {
 	return &Service{
 		identityHdl:          identityHandler,
 		credentialSessionHdl: credentialSessionHdl,

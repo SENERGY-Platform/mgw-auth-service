@@ -28,6 +28,16 @@ type getIdentitiesQuery struct {
 	Type string `form:"type"`
 }
 
+// GetIdentitiesH godoc
+// @Summary Get identities
+// @Description List all mgw-core users.
+// @Tags Identities
+// @Produce	json
+// @Param type query string false "filter by identity type"
+// @Success	200 {object} map[string]lib_model.Identity "identities"
+// @Failure	400 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /identities [get]
 func GetIdentitiesH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodGet, lib_model.IdentitiesPath, func(gc *gin.Context) {
 		query := getIdentitiesQuery{}
@@ -47,6 +57,17 @@ func GetIdentitiesH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// PostIdentityH godoc
+// @Summary Create identity
+// @Description Create a new mgw-core user.
+// @Tags Identities
+// @Accept json
+// @Produce	plain
+// @Param identity body lib_model.NewIdentityRequest true "user info"
+// @Success	200 {string} string "identity ID"
+// @Failure	400 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /identities [post]
 func PostIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodPost, lib_model.IdentitiesPath, func(gc *gin.Context) {
 		var req lib_model.NewIdentityRequest
@@ -64,6 +85,16 @@ func PostIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// GetIdentityH godoc
+// @Summary Get identity
+// @Description Get a mgw-core user.
+// @Tags Identities
+// @Produce	json
+// @Param id path string true "identity ID"
+// @Success	200 {object} lib_model.Identity "identity info"
+// @Failure	404 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /identities/{id} [get]
 func GetIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodGet, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
 		identity, err := a.GetIdentity(gc.Request.Context(), gc.Param("id"))
@@ -75,6 +106,18 @@ func GetIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// PatchIdentityH godoc
+// @Summary Update identity
+// @Description Change mgw-core user information or password.
+// @Tags Identities
+// @Accept json
+// @Param id path string true "identity ID"
+// @Param identity body lib_model.UpdateIdentityRequest true "identity info"
+// @Success	200
+// @Failure	400 {string} string "error message"
+// @Failure	404 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /identities/{id} [patch]
 func PatchIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodPatch, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
 		var req lib_model.UpdateIdentityRequest
@@ -92,6 +135,15 @@ func PatchIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// DeleteIdentityH godoc
+// @Summary Delete identity
+// @Description Remove a mgw-core user.
+// @Tags Identities
+// @Param id path string true "identity ID"
+// @Success	200
+// @Failure	404 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /identities/{id} [delete]
 func DeleteIdentityH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodDelete, path.Join(lib_model.IdentitiesPath, ":id"), func(gc *gin.Context) {
 		if err := a.DeleteIdentity(gc.Request.Context(), gc.Param("id")); err != nil {

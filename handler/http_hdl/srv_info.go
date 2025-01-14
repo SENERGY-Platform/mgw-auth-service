@@ -17,12 +17,21 @@
 package http_hdl
 
 import (
+	_ "github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib"
 	"github.com/SENERGY-Platform/mgw-auth-service/lib"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
+// GetSrvInfoH godoc
+// @Summary Get stats
+// @Description	Get basic service and runtime information.
+// @Tags Service Information
+// @Produce	json
+// @Success	200 {object} lib.SrvInfo "info"
+// @Failure	500 {string} string "error message"
+// @Router /info [get]
 func GetSrvInfoH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodGet, lib_model.SrvInfoPath, func(gc *gin.Context) {
 		gc.JSON(http.StatusOK, a.GetSrvInfo(gc.Request.Context()))

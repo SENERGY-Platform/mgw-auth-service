@@ -43,7 +43,7 @@ var routes = gin_mw.Routes[lib.Api]{
 // SetRoutes
 // @title Auth Service API
 // @version 0.2.13
-// @description Provides access to auth functions.
+// @description Provides access to mgw-core auth functions.
 // @license.name Apache-2.0
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @BasePath /

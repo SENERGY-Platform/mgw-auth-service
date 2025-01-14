@@ -29,6 +29,17 @@ type pairingOpenQuery struct {
 	Duration int64 `form:"duration"`
 }
 
+// PostPairingH godoc
+// @Summary Pair device
+// @Description Transmit device information to pair a device.
+// @Tags Device Pairing
+// @Accept json
+// @Produce	json
+// @Param meta body map[string]any true "device information"
+// @Success	200 {object} lib_model.CredentialsResponse "generated credentials"
+// @Failure	400 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /pairing/request [post]
 func PostPairingH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodPost, path.Join(lib_model.PairingPath, lib_model.PairingReqPath), func(gc *gin.Context) {
 		var req map[string]any
@@ -46,6 +57,15 @@ func PostPairingH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// PatchPairingOpenH godoc
+// @Summary Start paring
+// @Description Open paring endpoint and create a paring session.
+// @Tags Device Pairing
+// @Param duration query integer false "set session duration in nanoseconds (default=5m)"
+// @Success	200
+// @Failure	400 {string} string "error message"
+// @Failure	500 {string} string "error message"
+// @Router /pairing/open [patch]
 func PatchPairingOpenH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodPatch, path.Join(lib_model.PairingPath, lib_model.OpenPath), func(gc *gin.Context) {
 		var query pairingOpenQuery
@@ -62,6 +82,13 @@ func PatchPairingOpenH(a lib.Api) (string, string, gin.HandlerFunc) {
 	}
 }
 
+// PatchPairingCloseH godoc
+// @Summary Stop pairing
+// @Description Close paring endpoint and cancel paring session.
+// @Tags Device Pairing
+// @Success	200
+// @Failure	500 {string} string "error message"
+// @Router /pairing/close [patch]
 func PatchPairingCloseH(a lib.Api) (string, string, gin.HandlerFunc) {
 	return http.MethodPatch, path.Join(lib_model.PairingPath, lib_model.ClosePath), func(gc *gin.Context) {
 		err := a.ClosePairingSession(gc.Request.Context())

@@ -1,0 +1,322 @@
+basePath: /
+definitions:
+  lib.MemStats:
+    properties:
+      alloc:
+        type: integer
+      alloc_total:
+        type: integer
+      gc_cycles:
+        type: integer
+      sys_total:
+        type: integer
+    type: object
+  lib.SrvInfo:
+    properties:
+      mem_stats:
+        $ref: '#/definitions/lib.MemStats'
+      name:
+        type: string
+      up_time:
+        $ref: '#/definitions/time.Duration'
+      version:
+        type: string
+    type: object
+  model.CredentialsResponse:
+    properties:
+      id:
+        type: string
+      login:
+        type: string
+      secret:
+        type: string
+    type: object
+  model.Identity:
+    properties:
+      created:
+        type: string
+      id:
+        type: string
+      meta:
+        additionalProperties: {}
+        type: object
+      type:
+        $ref: '#/definitions/model.IdentityType'
+      updated:
+        type: string
+      username:
+        type: string
+    type: object
+  model.IdentityType:
+    enum:
+    - human
+    - machine
+    type: string
+    x-enum-varnames:
+    - HumanType
+    - MachineType
+  model.NewIdentityRequest:
+    properties:
+      meta:
+        additionalProperties: {}
+        type: object
+      secret:
+        type: string
+      type:
+        $ref: '#/definitions/model.IdentityType'
+      username:
+        type: string
+    type: object
+  model.UpdateIdentityRequest:
+    properties:
+      meta:
+        additionalProperties: {}
+        type: object
+      secret:
+        type: string
+    type: object
+  time.Duration:
+    enum:
+    - 1
+    - 1000
+    - 1000000
+    - 1000000000
+    type: integer
+    x-enum-varnames:
+    - Nanosecond
+    - Microsecond
+    - Millisecond
+    - Second
+info:
+  contact: {}
+  description: Provides access to mgw-core auth functions.
+  license:
+    name: Apache-2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Auth Service API
+  version: 0.2.13
+paths:
+  /identities:
+    get:
+      description: List all mgw-core users.
+      parameters:
+      - description: filter by identity type
+        in: query
+        name: type
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: identities
+          schema:
+            additionalProperties:
+              $ref: '#/definitions/model.Identity'
+            type: object
+        "400":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Get identities
+      tags:
+      - Identities
+    post:
+      consumes:
+      - application/json
+      description: Create a new mgw-core user.
+      parameters:
+      - description: user info
+        in: body
+        name: identity
+        required: true
+        schema:
+          $ref: '#/definitions/model.NewIdentityRequest'
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: identity ID
+          schema:
+            type: string
+        "400":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Create identity
+      tags:
+      - Identities
+  /identities/{id}:
+    delete:
+      description: Remove a mgw-core user.
+      parameters:
+      - description: identity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+        "404":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Delete identity
+      tags:
+      - Identities
+    get:
+      description: Get a mgw-core user.
+      parameters:
+      - description: identity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: identity info
+          schema:
+            $ref: '#/definitions/model.Identity'
+        "404":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Get identity
+      tags:
+      - Identities
+    patch:
+      consumes:
+      - application/json
+      description: Change mgw-core user information or password.
+      parameters:
+      - description: identity ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: identity info
+        in: body
+        name: identity
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateIdentityRequest'
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: error message
+          schema:
+            type: string
+        "404":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Update identity
+      tags:
+      - Identities
+  /info:
+    get:
+      description: Get basic service and runtime information.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: info
+          schema:
+            $ref: '#/definitions/lib.SrvInfo'
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Get stats
+      tags:
+      - Service Information
+  /pairing/close:
+    patch:
+      description: Close paring endpoint and cancel paring session.
+      responses:
+        "200":
+          description: OK
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Stop pairing
+      tags:
+      - Device Pairing
+  /pairing/open:
+    patch:
+      description: Open paring endpoint and create a paring session.
+      parameters:
+      - description: set session duration in nanoseconds (default=5m)
+        in: query
+        name: duration
+        type: integer
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Start paring
+      tags:
+      - Device Pairing
+  /pairing/request:
+    post:
+      consumes:
+      - application/json
+      description: Transmit device information to pair a device.
+      parameters:
+      - description: device information
+        in: body
+        name: meta
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: generated credentials
+          schema:
+            $ref: '#/definitions/model.CredentialsResponse'
+        "400":
+          description: error message
+          schema:
+            type: string
+        "500":
+          description: error message
+          schema:
+            type: string
+      summary: Pair device
+      tags:
+      - Device Pairing
+swagger: "2.0"

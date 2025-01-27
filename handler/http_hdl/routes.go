@@ -18,6 +18,7 @@ package http_hdl
 
 import (
 	gin_mw "github.com/SENERGY-Platform/gin-middleware"
+	_ "github.com/SENERGY-Platform/mgw-auth-service/handler/http_hdl/swagger_docs"
 	"github.com/SENERGY-Platform/mgw-auth-service/lib"
 	"github.com/SENERGY-Platform/mgw-auth-service/util"
 	"github.com/gin-gonic/gin"

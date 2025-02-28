@@ -17,7 +17,7 @@
 package service
 
 import (
-	srv_info_hdl "github.com/SENERGY-Platform/go-service-base/srv-info-hdl"
+	srv_info_hdl "github.com/SENERGY-Platform/mgw-go-service-base/srv-info-hdl"
 )
 
 type Service struct {

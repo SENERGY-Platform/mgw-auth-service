@@ -17,9 +17,9 @@
 package http_hdl
 
 import (
-	_ "github.com/SENERGY-Platform/go-service-base/srv-info-hdl/lib"
 	"github.com/SENERGY-Platform/mgw-auth-service/lib"
 	lib_model "github.com/SENERGY-Platform/mgw-auth-service/lib/model"
+	_ "github.com/SENERGY-Platform/mgw-go-service-base/srv-info-hdl/lib"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

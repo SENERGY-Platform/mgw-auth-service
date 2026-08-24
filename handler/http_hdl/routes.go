@@ -49,9 +49,12 @@ var routes = gin_mw.Routes[lib.Api]{
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @BasePath /
 func SetRoutes(e *gin.Engine, a lib.Api) error {
-	err := routes.Set(a, e, util.Logger)
+	endpoints, err := routes.Set(a, e)
 	if err != nil {
 		return err
+	}
+	for _, endpoint := range endpoints {
+		util.Logger.Debug("set route: " + endpoint[0] + " " + endpoint[1])
 	}
 	e.GET("swagger/*any", ginSwagger.WrapHandler(swaggerFiles.NewHandler()))
 	return nil
